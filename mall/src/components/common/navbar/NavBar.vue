@@ -6,24 +6,28 @@
 	</div>
 </template>
 
-<script>
-</script>
+<script></script>
 
 <style>
-	.nav-bar{
-		height: 44px;
-		line-height: 44px;
-		display: flex;
-		text-align: center;
-		
-	}
-	.left{
-		width: 60px;
-	}
-	.center{
-		flex: 1;
-	}
-	.right{
-		width: 60px;
-	}
+.nav-bar {
+	height: 44px;
+	line-height: 44px;
+	display: flex;
+	text-align: center;
+
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 10;
+}
+.left {
+	width: 60px;
+}
+.center {
+	flex: 1;
+}
+.right {
+	width: 60px;
+}
 </style>
