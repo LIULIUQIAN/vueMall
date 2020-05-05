@@ -1,13 +1,23 @@
 <template>
 	<div id="home">
 		<nav-bar class="nav-bar"><div slot="center">购物街</div></nav-bar>
-		<scroll class="content">
-			<home-swiper :banners="banners"></home-swiper>
+		<tab-control :titles="['流行', '新款', '精选']" 
+		class="fixed" 
+		ref="tabControl1" 
+		@itemClick="tabControlClick"
+		v-show="isTabFixed"></tab-control>
+		<scroll class="content" 
+		ref="scroll" 
+		:pullUpLoad="true" 
+		@pullingUp="loadMore"
+		:probeType="3"
+		@scroll="contentScroll">
+			<home-swiper :banners="banners" @swiperLoad="swiperLoad"></home-swiper>
 			<recommend-view :recommends="recommends"></recommend-view>
-			<feature-view></feature-view>
-			<tab-control :titles="['流行', '新款', '精选']" class="tab-control" @itemClick="tabControlClick"></tab-control>
+			<tab-control :titles="['流行', '新款', '精选']" ref="tabControl" @itemClick="tabControlClick"></tab-control>
 			<goods-list :goodsList="showGoodsList"></goods-list>
 		</scroll>
+		<back-top v-show="showBackTop" @click.native="scrollTop"></back-top>
 	</div>
 </template>
 
@@ -17,9 +27,10 @@ import HomeSwiper from './childComps/HomeSwiper.vue';
 import RecommendView from './childComps/RecommendView.vue';
 import FeatureView from './childComps/FeatureView.vue';
 import TabControl from '../../components/content/tabControl/TabControl.vue';
-import Scroll from '../../components/common/scroll/Scroll.vue'
-import GoodsList from '../../components/content/GoodsList/GoodsList.vue'
-import { getHomeMultidata ,getHomeData} from '../../network/home.js';
+import Scroll from '../../components/common/scroll/Scroll.vue';
+import GoodsList from '../../components/content/GoodsList/GoodsList.vue';
+import BackTop from '../../components/content/backTop/BackTop.vue'
+import { getHomeMultidata, getHomeData } from '../../network/home.js';
 export default {
 	name: 'Home',
 	data() {
@@ -27,11 +38,14 @@ export default {
 			banners: [],
 			recommends: [],
 			goodsList: {
-			  'pop': {page: 1, list: []},
-			  'new': {page: 1, list: []},
-			  'sell': {page: 1, list: []}
+				pop: { page: 1, list: [] },
+				new: { page: 1, list: [] },
+				sell: { page: 1, list: [] }
 			},
-			currentType:'pop'
+			currentType: 'pop',
+			showBackTop:false,
+			tabOffsetTop:0,
+			isTabFixed:false
 		};
 	},
 	components: {
@@ -41,7 +55,8 @@ export default {
 		FeatureView,
 		TabControl,
 		Scroll,
-		GoodsList
+		GoodsList,
+		BackTop
 	},
 	created() {
 		this.getMultidata();
@@ -49,39 +64,61 @@ export default {
 		this.getData('new');
 		this.getData('sell');
 	},
-	methods:{
-		getMultidata(){
+	mounted() {
+		this.$bus.$on('itemImageLoad', () => {
+			this.$refs.scroll.refresh();
+		});
+	},
+	methods: {
+		getMultidata() {
 			getHomeMultidata().then(res => {
 				console.log(res);
 				this.banners = res.data.banner.list;
 				this.recommends = res.data.recommend.list;
 			});
 		},
-		getData(type){
+		getData(type) {
 			let page = this.goodsList[type].page;
-			getHomeData(type,page).then(res =>{
-				this.goodsList[type].list.push(...res.data.list)
+			getHomeData(type, page).then(res => {
+				this.goodsList[type].list.push(...res.data.list);
 				this.goodsList[type].page += 1;
-				console.log(this.goodsList[type].list[0])
-			})
+				console.log(this.goodsList[type].list[0]);
+				
+				this.$refs.scroll.finishPullUp();
+			});
 		},
-		tabControlClick(index){
+		tabControlClick(index) {
 			switch (index) {
-			  case 0:
-			    this.currentType = 'pop'
-			    break
-			  case 1:
-			    this.currentType = 'new'
-			    break
-			  case 2:
-			    this.currentType = 'sell'
-			    break
+				case 0:
+					this.currentType = 'pop';
+					break;
+				case 1:
+					this.currentType = 'new';
+					break;
+				case 2:
+					this.currentType = 'sell';
+					break;
 			}
+			this.$refs.tabControl1.currentIndex = index;
+			this.$refs.tabControl.currentIndex = index;
+		},
+		loadMore(){
+			this.getData(this.currentType);
+		},
+		contentScroll(position){
+			this.showBackTop = -position.y > 1000
+			this.isTabFixed = -position.y > this.tabOffsetTop;
+		},
+		scrollTop(){
+			this.$refs.scroll.scrollTo();
+		},
+		swiperLoad(){
+			this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
 		}
 	},
-	computed:{
-		showGoodsList(){
-			return this.goodsList[this.currentType].list
+	computed: {
+		showGoodsList() {
+			return this.goodsList[this.currentType].list;
 		}
 	}
 };
@@ -97,12 +134,19 @@ export default {
 	background-color: var(--color-tint);
 	color: #ffffff;
 }
-.tab-control {
-	position: sticky;
+.fixed {
+	/* position: sticky;
+	top: 44px; */
+	position: fixed;
 	top: 44px;
+	left: 0;
+	right: 0;
+	z-index: 10;
 }
 
-.content{
+.content {
+	background-color: #FFFFFF;
+	/* overflow: hidden; */
 	position: absolute;
 	top: 44px;
 	bottom: 49px;
