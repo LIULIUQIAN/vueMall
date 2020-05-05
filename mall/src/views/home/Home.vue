@@ -17,13 +17,18 @@ import HomeSwiper from './childComps/HomeSwiper.vue';
 import RecommendView from './childComps/RecommendView.vue';
 import FeatureView from './childComps/FeatureView.vue';
 import TabControl from '../../components/content/tabControl/TabControl.vue';
-import { getHomeMultidata } from '../../network/home.js';
+import { getHomeMultidata ,getHomeData} from '../../network/home.js';
 export default {
 	name: 'Home',
 	data() {
 		return {
 			banners: [],
-			recommends: []
+			recommends: [],
+			goodsList: {
+			  'pop': {page: 1, list: []},
+			  'new': {page: 1, list: []},
+			  'sell': {page: 1, list: []}
+			},
 		};
 	},
 	components: {
@@ -34,11 +39,28 @@ export default {
 		TabControl
 	},
 	created() {
-		getHomeMultidata().then(res => {
-			console.log(res);
-			this.banners = res.data.banner.list;
-			this.recommends = res.data.recommend.list;
-		});
+		this.getMultidata();
+		this.getData('pop');
+		this.getData('new');
+		this.getData('sell');
+	},
+	methods:{
+		getMultidata(){
+			getHomeMultidata().then(res => {
+				console.log(res);
+				this.banners = res.data.banner.list;
+				this.recommends = res.data.recommend.list;
+			});
+		},
+		getData(type){
+			let page = this.goodsList[type].page;
+			getHomeData(type,page).then(res =>{
+				
+				console.log(res.data.list)
+				this.goodsList[type].list.push(res.data.list)
+				this.goodsList[type].page += 1;
+			})
+		}
 	}
 };
 </script>
