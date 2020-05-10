@@ -31,6 +31,7 @@ import Scroll from '../../components/common/scroll/Scroll.vue';
 import GoodsList from '../../components/content/GoodsList/GoodsList.vue';
 import BackTop from '../../components/content/backTop/BackTop.vue'
 import { getHomeMultidata, getHomeData } from '../../network/home.js';
+import {debounce} from '../../commo/utils.js' 
 export default {
 	name: 'Home',
 	data() {
@@ -65,8 +66,9 @@ export default {
 		this.getData('sell');
 	},
 	mounted() {
+		const refresh = debounce(this.$refs.scroll.refresh,500)
 		this.$bus.$on('itemImageLoad', () => {
-			this.$refs.scroll.refresh();
+			refresh();
 		});
 	},
 	methods: {
