@@ -47,6 +47,9 @@
 			},
 			scrollTo(x=0,y=0,time=300){
 				this.scroll && this.scroll.scrollTo(x,y,time)
+			},
+			getScrollY(){
+				return this.scroll ? this.scroll.y : 0
 			}
 			
 		}
