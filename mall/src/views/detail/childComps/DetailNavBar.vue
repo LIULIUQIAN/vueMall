@@ -1,6 +1,6 @@
 <template>
     <nav-bar class="detail-nav">
-        <img class="back" slot="left" src="../../../assets/img/common/back.svg">
+        <img class="back" slot="left" src="../../../assets/img/common/back.svg" @click="back">
         <div slot="center" class="title">
             <span v-for="(item,index) in titles"
                   class="title-item"
@@ -27,6 +27,9 @@
         methods:{
             itemClick(index){
                 this.currentIndex = index
+            },
+            back(){
+                this.$router.back();
             }
         }
     }
