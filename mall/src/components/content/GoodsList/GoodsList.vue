@@ -20,6 +20,9 @@
 				type:Array,
 				default:[]
 			}
+		},
+		methods:{
+
 		}
 	}
 </script>
