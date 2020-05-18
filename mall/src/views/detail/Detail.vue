@@ -6,6 +6,7 @@
             <detail-swiper :images="topImages"></detail-swiper>
             <detail-base-info :goods="goods"></detail-base-info>
             <detail-shop-info :shop="shop"></detail-shop-info>
+            <detail-goods-info :detail-info="detailInfo"></detail-goods-info>
         </scroll>
     </div>
 </template>
@@ -17,7 +18,7 @@
     import DetailSwiper from "./childComps/DetailSwiper";
     import DetailBaseInfo from "./childComps/DetailBaseInfo";
     import DetailShopInfo from "./childComps/DetailShopInfo";
-
+    import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
 
     export default {
         name: "Detail",
@@ -26,7 +27,9 @@
                 iid: '',
                 topImages: [],
                 goods:{},
-                shop:{}
+                shop:{},
+                detailInfo:{}
+
 
             }
         },
@@ -35,7 +38,8 @@
             Scroll,
             DetailSwiper,
             DetailBaseInfo,
-            DetailShopInfo
+            DetailShopInfo,
+            DetailGoodsInfo
 
         },
         methods: {
@@ -46,6 +50,7 @@
                     this.topImages = data.itemInfo.topImages;
                     this.goods = new Goods(data.itemInfo, data.columns, data.shopInfo.services)
                     this.shop = new Shop(data.shopInfo)
+                    this.detailInfo = data.detailInfo
                 })
             }
         },
