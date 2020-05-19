@@ -6,7 +6,7 @@
             <detail-swiper :images="topImages"></detail-swiper>
             <detail-base-info :goods="goods"></detail-base-info>
             <detail-shop-info :shop="shop"></detail-shop-info>
-            <detail-goods-info :detail-info="detailInfo"></detail-goods-info>
+            <detail-goods-info :detail-info="detailInfo" @detailImageLoad="detailImageLoad"></detail-goods-info>
         </scroll>
     </div>
 </template>
@@ -52,6 +52,10 @@
                     this.shop = new Shop(data.shopInfo)
                     this.detailInfo = data.detailInfo
                 })
+            },
+            detailImageLoad(){
+                console.log('图片加载完成====')
+                this.$refs.scroll.refresh()
             }
         },
 
