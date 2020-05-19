@@ -3,10 +3,12 @@
         <detail-nav-bar></detail-nav-bar>
         <scroll class="content"
                 ref="scroll">
-            <detail-swiper :images="topImages"></detail-swiper>
+            <detail-swiper :images="topImages" ref="base"></detail-swiper>
             <detail-base-info :goods="goods"></detail-base-info>
             <detail-shop-info :shop="shop"></detail-shop-info>
-            <detail-goods-info :detail-info="detailInfo" @detailImageLoad="detailImageLoad"></detail-goods-info>
+<!--            <detail-goods-info :detail-info="detailInfo" @detailImageLoad="detailImageLoad"></detail-goods-info>-->
+            <detail-param-info :param-info="paramInfo"></detail-param-info>
+            <detail-comment-info :comment-info="commentInfo"></detail-comment-info>
         </scroll>
     </div>
 </template>
@@ -19,6 +21,8 @@
     import DetailBaseInfo from "./childComps/DetailBaseInfo";
     import DetailShopInfo from "./childComps/DetailShopInfo";
     import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
+    import DetailParamInfo from "./childComps/DetailParamInfo";
+    import DetailCommentInfo from "./childComps/DetailCommentInfo";
 
     export default {
         name: "Detail",
@@ -28,9 +32,10 @@
                 topImages: [],
                 goods:{},
                 shop:{},
-                detailInfo:{}
-
-
+                detailInfo:{},
+                paramInfo: {},
+                commentInfo:{},
+                themeTops:[]
             }
         },
         components: {
@@ -39,7 +44,9 @@
             DetailSwiper,
             DetailBaseInfo,
             DetailShopInfo,
-            DetailGoodsInfo
+            DetailGoodsInfo,
+            DetailParamInfo,
+            DetailCommentInfo
 
         },
         methods: {
@@ -51,10 +58,14 @@
                     this.goods = new Goods(data.itemInfo, data.columns, data.shopInfo.services)
                     this.shop = new Shop(data.shopInfo)
                     this.detailInfo = data.detailInfo
+                    this.paramInfo = new GoodsParam(data.itemParams.info, data.itemParams.rule)
+                    if (data.rate.list.length){
+                        this.commentInfo = data.rate.list[0];
+                    }
+
                 })
             },
             detailImageLoad(){
-                console.log('图片加载完成====')
                 this.$refs.scroll.refresh()
             }
         },
