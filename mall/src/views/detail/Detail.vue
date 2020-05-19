@@ -14,6 +14,7 @@
             <detail-recommend-info :recommend-list="recommendList" ref="recommend"></detail-recommend-info>
         </scroll>
         <back-top v-show="showBackTop" @click.native="scrollTop"></back-top>
+        <detail-bottom-bar @addToCart="addToCart"></detail-bottom-bar>
     </div>
 </template>
 
@@ -30,6 +31,8 @@
     import DetailCommentInfo from "./childComps/DetailCommentInfo";
     import DetailRecommendInfo from "./childComps/DetailRecommendInfo";
     import BackTop from '../../components/content/backTop/BackTop'
+    import DetailBottomBar from "./childComps/DetailBottomBar";
+    import {debounce} from "../../commo/utils";
 
     export default {
         name: "Detail",
@@ -58,7 +61,8 @@
             DetailParamInfo,
             DetailCommentInfo,
             DetailRecommendInfo,
-            BackTop
+            BackTop,
+            DetailBottomBar
 
         },
         methods: {
@@ -110,6 +114,9 @@
             itemClick(index){
                 this.$refs.scroll.scrollTo(0,-this.themeTops[index])
                 this.$refs.scroll.refresh()
+            },
+            addToCart(){
+                console.log('加入购物车ssssssdfsdf')
             }
 
         },
@@ -119,8 +126,9 @@
             this.getRecommendData()
         },
         mounted() {
+            const refresh = debounce(this.$refs.scroll.refresh,500)
             this.$bus.$on('itemImageLoad', () => {
-                this.$refs.scroll.refresh()
+                refresh()
             });
         },
         updated() {
