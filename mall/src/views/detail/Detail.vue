@@ -116,7 +116,13 @@
                 this.$refs.scroll.refresh()
             },
             addToCart(){
-                console.log('加入购物车ssssssdfsdf')
+                const obj = {}
+                obj.iid = this.iid;
+                obj.imgURL = this.topImages[0]
+                obj.title = this.goods.title
+                obj.desc = this.goods.desc;
+                obj.newPrice = this.goods.nowPrice;
+                this.$store.commit('addCart',obj)
             }
 
         },
