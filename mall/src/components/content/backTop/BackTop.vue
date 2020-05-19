@@ -17,7 +17,5 @@
 	.back-top img{
 		width: 43px;
 		height: 43px;
-		
-		
 	}
 </style>

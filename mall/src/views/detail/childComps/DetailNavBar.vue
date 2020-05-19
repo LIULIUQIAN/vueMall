@@ -17,8 +17,13 @@
         name: "DetailNavBar",
         data(){
             return{
-                titles:['商品','参数','评论','推荐'],
-                currentIndex:0
+                titles:['商品','参数','评论','推荐']
+            }
+        },
+        props:{
+            currentIndex:{
+                type: Number,
+                default:0
             }
         },
         components:{
@@ -26,7 +31,8 @@
         },
         methods:{
             itemClick(index){
-                this.currentIndex = index
+                // this.currentIndex = index
+                this.$emit('itemClick',index)
             },
             back(){
                 this.$router.back();
