@@ -9,12 +9,13 @@
 <!--            <detail-goods-info :detail-info="detailInfo" @detailImageLoad="detailImageLoad"></detail-goods-info>-->
             <detail-param-info :param-info="paramInfo"></detail-param-info>
             <detail-comment-info :comment-info="commentInfo"></detail-comment-info>
+            <detail-recommend-info :recommend-list="recommendList"></detail-recommend-info>
         </scroll>
     </div>
 </template>
 
 <script>
-    import {getDetail,Goods,Shop,GoodsParam} from '../../network/detail'
+    import {getDetail,getRecommend,Goods,Shop,GoodsParam} from '../../network/detail'
     import DetailNavBar from "./childComps/DetailNavBar";
     import Scroll from "../../components/common/scroll/Scroll";
     import DetailSwiper from "./childComps/DetailSwiper";
@@ -23,6 +24,7 @@
     import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
     import DetailParamInfo from "./childComps/DetailParamInfo";
     import DetailCommentInfo from "./childComps/DetailCommentInfo";
+    import DetailRecommendInfo from "./childComps/DetailRecommendInfo";
 
     export default {
         name: "Detail",
@@ -35,6 +37,7 @@
                 detailInfo:{},
                 paramInfo: {},
                 commentInfo:{},
+                recommendList:[],
                 themeTops:[]
             }
         },
@@ -46,7 +49,8 @@
             DetailShopInfo,
             DetailGoodsInfo,
             DetailParamInfo,
-            DetailCommentInfo
+            DetailCommentInfo,
+            DetailRecommendInfo
 
         },
         methods: {
@@ -65,6 +69,12 @@
 
                 })
             },
+            getRecommendData(){
+                getRecommend().then((res, error) =>{
+                    if (error) return
+                    this.recommendList = res.data.list
+                })
+            },
             detailImageLoad(){
                 this.$refs.scroll.refresh()
             }
@@ -73,6 +83,12 @@
         created() {
             this.iid = this.$route.params.id
             this.getDetailData()
+            this.getRecommendData()
+        },
+        mounted() {
+            this.$bus.$on('itemImageLoad', () => {
+                this.$refs.scroll.refresh()
+            });
         }
     }
 </script>
