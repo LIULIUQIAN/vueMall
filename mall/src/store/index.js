@@ -18,6 +18,12 @@ export default new Vuex.Store({
         info.checked = true
         state.cartList.push(info)
       }
+    },
+    checkedChange(state,info) {
+      const oldInfo = state.cartList.find(item => item.iid === info.iid)
+      if (oldInfo) {
+        oldInfo.checked = !oldInfo.checked;
+      }
     }
   },
   actions: {

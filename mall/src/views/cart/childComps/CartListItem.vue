@@ -1,5 +1,8 @@
 <template>
     <div class="shop-item">
+        <div class="item-selector">
+            <CheckButton @checkBtnClick="checkedChange" v-model="itemInfo.checked"></CheckButton>
+        </div>
         <img :src="itemInfo.imgURL" class="item-img">
         <div class="item-info">
             <div class="item-title">{{itemInfo.title}}</div>
@@ -13,12 +16,22 @@
 </template>
 
 <script>
+    import CheckButton from "./CheckButton";
     export default {
         name: "CartListItem",
+        components:{
+            CheckButton
+        },
         props: {
             itemInfo: {
                 type: Object,
                 default: {}
+            }
+        },
+        methods: {
+            checkedChange() {
+                // this.itemInfo.checked = !this.itemInfo.checked;
+                this.$store.commit('checkedChange',this.itemInfo)
             }
         }
     }
@@ -32,6 +45,14 @@
         padding: 10px;
         border-bottom: 1px solid #ccc;
     }
+    .item-selector {
+        width: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 10px;
+    }
+
     .item-img{
         width: 80px;
         height: 100px;

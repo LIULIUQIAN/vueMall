@@ -27,8 +27,6 @@
         position: absolute;
         top: 44px;
         bottom: 60px;
-        left: 0;
-        right: 0;
     }
 
 </style>
